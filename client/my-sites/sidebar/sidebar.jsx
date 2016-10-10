@@ -488,7 +488,8 @@ export const MySitesSidebar = React.createClass( {
 				link={ siteSettingsLink }
 				onNavigate={ this.onNavigate }
 				icon="cog"
-				preloadSectionName="settings" />
+				preloadSectionName="settings"
+				tipTarget="settings" />
 		);
 	},
 
