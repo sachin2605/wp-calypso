@@ -20,14 +20,16 @@ export const PLAN_FREE = 'free_plan';
 export const PLAN_JETPACK_FREE = 'jetpack_free';
 export const PLAN_JETPACK_PREMIUM = 'jetpack_premium';
 export const PLAN_JETPACK_BUSINESS = 'jetpack_business';
+export const PLAN_JETPACK_PERSONAL = 'jetpack_personal';
 export const PLAN_JETPACK_PREMIUM_MONTHLY = 'jetpack_premium_monthly';
 export const PLAN_JETPACK_BUSINESS_MONTHLY = 'jetpack_business_monthly';
+export const PLAN_JETPACK_PERSONAL_MONTHLY = 'jetpack_personal_monthly';
 export const PLAN_HOST_BUNDLE = 'host-bundle';
 export const PLAN_WPCOM_ENTERPRISE = 'wpcom-enterprise';
 export const PLAN_CHARGEBACK = 'chargeback';
 
 export const POPULAR_PLANS = [ PLAN_PREMIUM, PLAN_JETPACK_PREMIUM, PLAN_JETPACK_PREMIUM_MONTHLY ];
-export const JETPACK_MONTHLY_PLANS = [ PLAN_JETPACK_PREMIUM_MONTHLY, PLAN_JETPACK_BUSINESS_MONTHLY ];
+export const JETPACK_MONTHLY_PLANS = [ PLAN_JETPACK_PREMIUM_MONTHLY, PLAN_JETPACK_BUSINESS_MONTHLY, PLAN_JETPACK_PERSONAL_MONTHLY ];
 
 export const PLAN_MONTHLY_PERIOD = 31;
 export const PLAN_ANNUAL_PERIOD = 365;
@@ -64,6 +66,7 @@ export const FEATURE_SPAM_AKISMET_PLUS = 'spam-akismet-plus';
 export const FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY = 'offsite-backup-vaultpress-daily';
 export const FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME = 'offsite-backup-vaultpress-realtime';
 export const FEATURE_BACKUP_ARCHIVE_30 = 'backup-archive-30';
+export const FEATURE_BACKUP_ARCHIVE_15 = 'backup-archive-15';
 export const FEATURE_BACKUP_ARCHIVE_UNLIMITED = 'backup-archive-unlimited';
 export const FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED = 'backup-storage-space-unlimited';
 export const FEATURE_AUTOMATED_RESTORES = 'automated-restores';
@@ -230,6 +233,25 @@ export const PLANS_LIST = {
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed yearly' )
 	},
+	[ PLAN_JETPACK_PERSONAL ]: {
+		getTitle: () => i18n.translate( 'Personal' ),
+		getProductId: () => 2005,
+		availableFor: ( plan ) => includes( [ PLAN_JETPACK_FREE ], plan ),
+		getPathSlug: () => 'jetpack-personal',
+		getDescription: () => i18n.translate(
+			'This is some text talking about how good is our personal plan.' +
+			' If you have any suggestion about it, tell Javi about it.'
+		),
+		getFeatures: () => [
+			FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
+			FEATURE_BACKUP_ARCHIVE_30,
+			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
+			FEATURE_AUTOMATED_RESTORES,
+			FEATURE_SPAM_AKISMET_PLUS,
+		],
+		getBillingTimeFrame: () => i18n.translate( 'per month, billed yearly' )
+	},
+
 	[ PLAN_JETPACK_PREMIUM_MONTHLY ]: {
 		getTitle: () => i18n.translate( 'Premium' ),
 		getProductId: () => 2003,
@@ -250,6 +272,28 @@ export const PLANS_LIST = {
 		],
 		getBillingTimeFrame: () => i18n.translate( 'per month, billed monthly' )
 	},
+
+	[ PLAN_JETPACK_PERSONAL_MONTHLY ]: {
+		getTitle: () => i18n.translate( 'Personal' ),
+		getProductId: () => 2006,
+		getPathSlug: () => 'jetpack-personal-monthly',
+		availableFor: ( plan ) => includes( [ PLAN_JETPACK_FREE ], plan ),
+		getDescription: () => i18n.translate(
+			'This is some text talking about how good is our monthly personal plan.' +
+			' If you have any suggestion about it, tell Javi about it.'
+		),
+		getFeatures: () => [
+			FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
+			FEATURE_BACKUP_ARCHIVE_30,
+			FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
+			FEATURE_AUTOMATED_RESTORES,
+			FEATURE_SPAM_AKISMET_PLUS,
+			FEATURE_EASY_SITE_MIGRATION,
+			FEATURE_EMAIL_LIVE_CHAT_SUPPORT
+		],
+		getBillingTimeFrame: () => i18n.translate( 'per month, billed monthly' )
+	},
+
 	[ PLAN_JETPACK_BUSINESS ]: {
 		getTitle: () => i18n.translate( 'Professional' ),
 		getProductId: () => 2001,
@@ -543,6 +587,11 @@ export const FEATURES_LIST = {
 		getTitle: () => i18n.translate( '30-day Backup Archive' ),
 		getDescription: () => i18n.translate( 'Browse or restore any backup made within the past 30 days.' )
 	},
+	[ FEATURE_BACKUP_ARCHIVE_15 ]: {
+		getSlug: () => FEATURE_BACKUP_ARCHIVE_15,
+		getTitle: () => i18n.translate( '15-day Backup Archive' ),
+		getDescription: () => i18n.translate( 'Browse or restore any backup made within the past 15 days.' )
+	},
 	[ FEATURE_BACKUP_ARCHIVE_UNLIMITED ]: {
 		getSlug: () => FEATURE_BACKUP_ARCHIVE_UNLIMITED,
 		getTitle: () => i18n.translate( 'Unlimited Backup Archive' ),
@@ -626,6 +675,8 @@ export function getPlanClass( plan ) {
 		case PLAN_FREE:
 			return 'is-free-plan';
 		case PLAN_PERSONAL:
+		case PLAN_JETPACK_PERSONAL:
+		case PLAN_JETPACK_PERSONAL_MONTHLY:
 			return 'is-personal-plan';
 		case PLAN_PREMIUM:
 		case PLAN_JETPACK_PREMIUM:
@@ -646,6 +697,8 @@ export function getMonthlyPlanByYearly( plan ) {
 			return PLAN_JETPACK_PREMIUM_MONTHLY;
 		case PLAN_JETPACK_BUSINESS:
 			return PLAN_JETPACK_BUSINESS_MONTHLY;
+		case PLAN_JETPACK_PERSONAL:
+			return PLAN_JETPACK_PERSONAL_MONTHLY;
 		default:
 			return '';
 	}
