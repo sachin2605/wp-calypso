@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import times from 'lodash/times';
-import isEqual from 'lodash/isEqual';
 import { localize } from 'i18n-calypso';
 import identity from 'lodash/identity';
 import { connect } from 'react-redux';
@@ -62,11 +61,6 @@ export const ThemesList = React.createClass( {
 				return '';
 			}
 		};
-	},
-
-	shouldComponentUpdate( nextProps ) {
-		return this.props.loading !== nextProps.loading ||
-			! isEqual( this.props.themes, nextProps.themes );
 	},
 
 	renderTheme( theme, index ) {

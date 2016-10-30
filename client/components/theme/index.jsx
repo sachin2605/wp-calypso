@@ -5,7 +5,6 @@ import React from 'react';
 import classNames from 'classnames';
 import noop from 'lodash/noop';
 import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
 
 /**
  * Internal dependencies
@@ -60,10 +59,6 @@ const Theme = React.createClass( {
 		index: React.PropTypes.number,
 		// Label to show on screenshot hover.
 		actionLabel: React.PropTypes.string
-	},
-
-	shouldComponentUpdate( nextProps ) {
-		return ! isEqual( nextProps.theme, this.props.theme );
 	},
 
 	getDefaultProps() {
