@@ -96,7 +96,6 @@ module.exports = {
 			emailNudgeOnTop: 50,
 		},
 		defaultVariation: 'original',
-		allowAnyLocale: true,
 	},
 	siteTitleStep: {
 		datestamp: '20160928',
