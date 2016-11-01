@@ -111,11 +111,14 @@ function mediaButton( editor ) {
 		}
 
 		ReactDom.render(
-			<TinyMCEDropZone
-				editor={ editor }
-				sites={ sites }
-				onInsertMedia={ insertMedia }
-				onRenderModal={ renderModal } />,
+			<ReduxProvider store={ store }>
+				<TinyMCEDropZone
+					editor={ editor }
+					sites={ sites }
+					onInsertMedia={ insertMedia }
+					onRenderModal={ renderModal }
+				/>
+			</ReduxProvider>,
 			nodes.dropzone
 		);
 	}
