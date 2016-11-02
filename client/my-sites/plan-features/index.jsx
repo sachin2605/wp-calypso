@@ -107,9 +107,9 @@ class PlanFeatures extends Component {
 	}
 
 	renderUpgradeDisabledNotice() {
-		const { canPurchase, isPlaceholder, translate } = this.props;
+		const { canPurchase, hasPlaceholders, translate } = this.props;
 
-		if ( isPlaceholder || canPurchase ) {
+		if ( hasPlaceholders || canPurchase ) {
 			return null;
 		}
 
@@ -125,7 +125,7 @@ class PlanFeatures extends Component {
 
 	renderMobileView() {
 		const {
-			canPurchase, isPlaceholder, translate, planProperties, isInSignup, intervalType, site, isInJetpackConnect
+			canPurchase, translate, planProperties, isInSignup, intervalType, site, isInJetpackConnect
 		} = this.props;
 
 		// move any free plan to last place in mobile view
@@ -155,9 +155,9 @@ class PlanFeatures extends Component {
 				popular,
 				rawPrice,
 				relatedMonthlyPlan,
-				primaryUpgrade
+				primaryUpgrade,
+				isPlaceholder
 			} = properties;
-
 			return (
 				<div className="plan-features__mobile-plan" key={ planName }>
 					<PlanFeaturesHeader
@@ -207,7 +207,7 @@ class PlanFeatures extends Component {
 	}
 
 	renderPlanHeaders() {
-		const { planProperties, isPlaceholder, intervalType, site, isInJetpackConnect } = this.props;
+		const { planProperties, intervalType, site, isInJetpackConnect } = this.props;
 
 		return map( planProperties, ( properties ) => {
 			const {
@@ -218,7 +218,8 @@ class PlanFeatures extends Component {
 				planName,
 				popular,
 				rawPrice,
-				relatedMonthlyPlan
+				relatedMonthlyPlan,
+				isPlaceholder
 			} = properties;
 			const classes = classNames( 'plan-features__table-item', 'has-border-top' );
 			return (
@@ -244,12 +245,13 @@ class PlanFeatures extends Component {
 	}
 
 	renderPlanDescriptions() {
-		const { planProperties, isPlaceholder } = this.props;
+		const { planProperties } = this.props;
 
 		return map( planProperties, ( properties ) => {
 			const {
 				planName,
-				planConstantObj
+				planConstantObj,
+				isPlaceholder
 			} = properties;
 
 			const classes = classNames( 'plan-features__table-item', {
@@ -273,7 +275,7 @@ class PlanFeatures extends Component {
 	}
 
 	renderTopButtons() {
-		const { canPurchase, planProperties, isPlaceholder, isInSignup, site } = this.props;
+		const { canPurchase, planProperties, isInSignup, site } = this.props;
 
 		return map( planProperties, ( properties ) => {
 			const {
@@ -281,7 +283,8 @@ class PlanFeatures extends Component {
 				current,
 				onUpgradeClick,
 				planName,
-				primaryUpgrade
+				primaryUpgrade,
+				isPlaceholder
 			} = properties;
 
 			const classes = classNames(
@@ -420,7 +423,7 @@ class PlanFeatures extends Component {
 	}
 
 	renderBottomButtons() {
-		const { canPurchase, planProperties, isPlaceholder, isInSignup, site } = this.props;
+		const { canPurchase, planProperties, isInSignup, site } = this.props;
 
 		return map( planProperties, ( properties ) => {
 			const {
@@ -428,7 +431,8 @@ class PlanFeatures extends Component {
 				current,
 				onUpgradeClick,
 				planName,
-				primaryUpgrade
+				primaryUpgrade,
+				isPlaceholder
 			} = properties;
 			const classes = classNames(
 				'plan-features__table-item',
@@ -466,7 +470,6 @@ PlanFeatures.propTypes = {
 	// either you specify the plans prop or isPlaceholder prop
 	plans: PropTypes.array,
 	planProperties: PropTypes.array,
-	isPlaceholder: PropTypes.bool,
 	isInSignup: PropTypes.bool,
 	isInJetpackConnect: PropTypes.bool,
 	selectedFeature: PropTypes.string,
@@ -490,9 +493,8 @@ export default connect(
 		const sitePlans = getPlansBySiteId( state, selectedSiteId );
 		const isPaid = isCurrentPlanPaid( state, selectedSiteId );
 		const canPurchase = ! isPaid || isCurrentUserCurrentPlanOwner( state, selectedSiteId );
-		let isPlaceholder = placeholder;
-
 		const planProperties = map( plans, ( plan ) => {
+			let isPlaceholder = false;
 			const planConstantObj = applyTestFiltersToPlansList( plan );
 			const planProductId = planConstantObj.getProductId();
 			const planObject = getPlan( state, planProductId );
@@ -508,6 +510,7 @@ export default connect(
 			}
 
 			return {
+				isPlaceholder,
 				available: available,
 				currencyCode: getCurrentUserCurrencyCode( state ),
 				current: isCurrentSitePlan( state, selectedSiteId, planProductId ),
@@ -543,7 +546,6 @@ export default connect(
 
 		return {
 			canPurchase,
-			isPlaceholder,
 			planProperties: planProperties
 		};
 	},
