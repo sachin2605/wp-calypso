@@ -77,7 +77,7 @@ class PlanFeaturesHeader extends Component {
 			'is-placeholder': isPlaceholder
 		} );
 
-		if ( ! site.jetpack ) {
+		if ( ! site.jetpack || this.props.planType === PLAN_JETPACK_FREE ) {
 			return (
 				<p className={ timeframeClasses } >
 					{ ! isPlaceholder ? billingTimeFrame : '' }
@@ -111,7 +111,7 @@ class PlanFeaturesHeader extends Component {
 		plansUrl += '/plans';
 
 		return (
-			<SegmentedControl className="plan-features__interval-type" primary={ true }>
+			<SegmentedControl compact className="plan-features__interval-type" primary={ true }>
 				<SegmentedControlItem
 					selected={ intervalType === 'monthly' }
 					path={ plansLink( plansUrl, site, 'monthly' ) }
