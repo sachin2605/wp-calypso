@@ -9,7 +9,7 @@ import debugFactory from 'debug';
  * Internal dependencies
  */
 import MeSidebarNavigation from 'me/sidebar-navigation';
-import protectForm from 'lib/mixins/protect-form';
+import { protectForm } from 'components/hoc/protect-form';
 import formBase from 'me/form-base';
 import FormButton from 'components/forms/form-button';
 import FormFieldset from 'components/forms/form-fieldset';
@@ -27,11 +27,11 @@ import Main from 'components/main';
 
 const debug = debugFactory( 'calypso:me:profile' );
 
-export default React.createClass( {
+export default protectForm( React.createClass( {
 
 	displayName: 'Profile',
 
-	mixins: [ formBase, LinkedStateMixin, protectForm.mixin, observe( 'userSettings' ), eventRecorder ],
+	mixins: [ formBase, LinkedStateMixin, observe( 'userSettings' ), eventRecorder ],
 
 	componentDidMount() {
 		debug( this.displayName + ' component is mounted.' );
@@ -76,7 +76,7 @@ export default React.createClass( {
 						) }
 					</p>
 
-					<form onSubmit={ this.submitForm } onChange={ this.markChanged }>
+					<form onSubmit={ this.submitForm } onChange={ this.props.markChanged }>
 						<FormFieldset>
 							<FormLabel htmlFor="first_name">{ this.translate( 'First Name' ) }</FormLabel>
 							<FormTextInput
@@ -133,4 +133,4 @@ export default React.createClass( {
 			</Main>
 		);
 	}
-} );
+} ) );
