@@ -18,7 +18,7 @@ import {
 	SITES_REQUEST,
 	SITES_REQUEST_FAILURE,
 	SITES_REQUEST_SUCCESS,
-	THEME_ACTIVATED,
+	THEME_ACTIVATE_SUCCESS,
 	WORDADS_SITE_APPROVE_REQUEST_SUCCESS,
 	SERIALIZE,
 	DESERIALIZE
@@ -227,7 +227,7 @@ describe( 'reducer', () => {
 				}
 			} );
 			const state = items( original, {
-				type: THEME_ACTIVATED,
+				type: THEME_ACTIVATE_SUCCESS,
 				siteId: 2916284,
 				theme: {
 					name: 'Twenty Sixteen',

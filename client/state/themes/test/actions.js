@@ -8,6 +8,9 @@ import { expect } from 'chai';
  * Internal dependencies
  */
 import {
+	THEME_ACTIVATE,
+	THEME_ACTIVATE_SUCCESS,
+	THEME_ACTIVATE_FAILURE,
 	THEME_REQUEST,
 	THEME_REQUEST_SUCCESS,
 	THEME_REQUEST_FAILURE,
@@ -17,6 +20,9 @@ import {
 	THEMES_REQUEST_FAILURE
 } from 'state/action-types';
 import {
+	activateTheme,
+	themeActivated,
+	themeActivationFailed,
 	receiveTheme,
 	receiveThemes,
 	requestThemes,
@@ -264,6 +270,51 @@ describe( 'actions', () => {
 					themeId: 420,
 					error: sinon.match( { message: 'Unknown theme' } )
 				} );
+			} );
+		} );
+	} );
+
+	describe( '#activateTheme()', () => {
+		it( 'should return an action object', () => {
+			const theme = { id: 'twentysixteen', name: 'Twenty Sixteen' };
+			const site = { ID: 2211667, name: 'test site' };
+			const action = activateTheme( theme, site );
+
+			expect( action ).to.eql( {
+				type: THEME_ACTIVATE,
+				theme: theme,
+				site: site
+			} );
+		} );
+	} );
+
+	describe( '#themeActivated()', () => {
+		it( 'should return an action object', () => {
+			const theme = { id: 'twentysixteen', name: 'Twenty Sixteen' };
+			const site = { ID: 2211667, name: 'test site' };
+			const action = themeActivated( theme, site );
+
+			expect( action ).to.eql( {
+				type: THEME_ACTIVATE_SUCCESS,
+				theme,
+				site,
+				siteId: site.ID
+			} );
+		} );
+	} );
+
+	describe( '#athemeActivationFailed()', () => {
+		it( 'should return an action object', () => {
+			const theme = { id: 'twentysixteennnn', name: 'Twenty Sixteen' };
+			const site = { ID: 2211667, name: 'test site' };
+			const error = { error: 'unknown_theme', message: 'Unknown theme' };
+			const action = themeActivationFailed( theme, site, error );
+
+			expect( action ).to.eql( {
+				type: THEME_ACTIVATE_FAILURE,
+				theme,
+				site,
+				error,
 			} );
 		} );
 	} );

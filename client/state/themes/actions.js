@@ -9,7 +9,11 @@ import {
 	THEMES_RECEIVE,
 	THEMES_REQUEST,
 	THEMES_REQUEST_SUCCESS,
-	THEMES_REQUEST_FAILURE
+	THEMES_REQUEST_FAILURE,
+	THEME_ACTIVATE,
+	THEME_ACTIVATE_SUCCESS,
+	THEME_ACTIVATE_FAILURE,
+	THEMES_RECEIVE_SERVER_ERROR,
 } from 'state/action-types';
 
 /**
@@ -115,5 +119,63 @@ export function requestTheme( siteId, themeId ) {
 				error
 			} );
 		} );
+	};
+}
+
+export function receiveServerError( error ) {
+	return {
+		type: THEMES_RECEIVE_SERVER_ERROR,
+		error: error
+	};
+}
+
+/**
+ * Returns an action object to be used in signalling that a theme activation
+ * has been triggered
+ *
+ * @param  {Object}  theme Theme received
+ * @param  {Object}  site Site used for activation
+ * @return {Object}  Action object
+ */
+export function activateTheme( theme, site ) {
+	return {
+		type: THEME_ACTIVATE,
+		theme,
+		site,
+	};
+}
+
+/**
+ * Returns an action object to be used in signalling that a theme activation
+ * has been successfull
+ *
+ * @param  {Object}  theme Theme received
+ * @param  {Object}  site Site used for activation
+ * @return {Object}  Action object
+ */
+export function themeActivated( theme, site ) {
+	const siteId = site.ID;
+	return {
+		type: THEME_ACTIVATE_SUCCESS,
+		theme,
+		site,
+		siteId,
+	};
+}
+
+/**
+ * Returns an action object to be used in signalling that a theme activation
+ * has failed
+ *
+ * @param  {Object}  theme Theme received
+ * @param  {Object}  site Site used for activation
+ * @return {Object}  Action object
+ */
+export function themeActivationFailed( theme, site, error ) {
+	return {
+		type: THEME_ACTIVATE_FAILURE,
+		theme,
+		site,
+		error,
 	};
 }
