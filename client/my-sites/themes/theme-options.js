@@ -144,7 +144,7 @@ const ALL_THEME_OPTIONS = {
 const ALL_THEME_ACTIONS = { activate: activateAction }; // All theme related actions available.
 
 export default connect(
-	( state, { options: optionNames, site, theme } ) => {
+	( state, { options: optionNames, site } ) => {
 		let options = pick( ALL_THEME_OPTIONS, optionNames );
 		let mapGetUrl = identity, mapHideForSite = identity;
 
@@ -160,11 +160,6 @@ export default connect(
 			options = pickBy( options, option =>
 				! ( option.hideForSite && option.hideForSite( state, siteId ) )
 			);
-			if ( theme ) {
-				options = pickBy( options, option =>
-					! ( option.hideForTheme && option.hideForTheme( state, theme, siteId ) )
-				);
-			}
 		} else {
 			mapGetUrl = getUrl => ( t, s ) => getUrl( state, t, s );
 			mapHideForSite = hideForSite => ( s ) => hideForSite( state, s );

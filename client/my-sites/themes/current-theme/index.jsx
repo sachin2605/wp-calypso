@@ -4,7 +4,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import map from 'lodash/map';
+import { map, pickBy } from 'lodash';
 
 /**
  * Internal dependencies
@@ -43,6 +43,10 @@ const CurrentTheme = React.createClass( {
 			placeholderText = <span className="current-theme__placeholder">loading...</span>,
 			text = ( currentTheme && currentTheme.name ) ? currentTheme.name : placeholderText;
 
+		const options = pickBy( this.props.options, option =>
+			currentTheme && ! ( option.hideForTheme && option.hideForTheme( currentTheme ) )
+		);
+
 		return (
 			<Card className="current-theme">
 				{ site && <QueryCurrentTheme siteId={ site.ID } /> }
@@ -56,9 +60,9 @@ const CurrentTheme = React.createClass( {
 				</div>
 				<div className={ classNames(
 					'current-theme__actions',
-					{ 'two-buttons': Object.keys( this.props.options ).length === 2 }
+					{ 'two-buttons': Object.keys( options ).length === 2 }
 					) } >
-					{ map( this.props.options, ( option, name ) => (
+					{ map( options, ( option, name ) => (
 						<CurrentThemeButton name={ name }
 							key={ name }
 							label={ option.label }
@@ -74,7 +78,6 @@ const CurrentTheme = React.createClass( {
 
 const CurrentThemeWithOptions = ( { site, currentTheme } ) => (
 	<ThemeOptions site={ site }
-		theme={ currentTheme /* TODO: Have ThemeOptions only use theme ID */ }
 		options={ [
 			'customize',
 			'info',
@@ -86,13 +89,7 @@ const CurrentThemeWithOptions = ( { site, currentTheme } ) => (
 );
 
 export default connect(
-	( state, { site } ) => {
-		const currentTheme = site && getCurrentTheme( state, site.ID );
-		// FIXME (ockham): Remove this ugly hack. Currently required since the endpoint doesn't return an `active` attr
-		const theme = Object.assign( {}, currentTheme, { active: true } );
-
-		return {
-			currentTheme: theme
-		};
-	}
+	( state, { site } ) => ( {
+		currentTheme: site && getCurrentTheme( state, site.ID )
+	} )
 )( CurrentThemeWithOptions );
