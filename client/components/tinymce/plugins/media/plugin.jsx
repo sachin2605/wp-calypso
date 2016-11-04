@@ -37,6 +37,7 @@ var sites = require( 'lib/sites-list' )(),
 import EditorMediaModal from 'post-editor/media-modal';
 import { setEditorMediaModalView } from 'state/ui/editor/actions';
 import { ModalViews } from 'state/ui/media-modal/constants';
+import { receiveMediaItems } from 'state/media/actions';
 
 /**
  * Module variables
@@ -46,6 +47,9 @@ var REGEXP_IMG = /<img\s[^>]*\/?>/ig,
 
 function mediaButton( editor ) {
 	const store = editor.getParam( 'redux_store' );
+	const receiveMediaItemsAction = ( siteId, data ) => {
+		store.dispatch( receiveMediaItems( siteId, data ) );
+	};
 	var nodes = {},
 		updateMedia, resizeEditor;
 
@@ -520,7 +524,7 @@ function mediaButton( editor ) {
 
 			const media = MediaStore.get( site.ID, id );
 			if ( ! media ) {
-				MediaActions.fetch( site.ID, id );
+				MediaActions.fetch( site.ID, id, receiveMediaItemsAction );
 			}
 
 			return assign( { ID: id }, media );
@@ -575,7 +579,7 @@ function mediaButton( editor ) {
 			}
 
 			setTimeout( function() {
-				MediaActions.fetch( site.ID, parsed.media.ID );
+				MediaActions.fetch( site.ID, parsed.media.ID, receiveMediaItemsAction );
 			}, 0 );
 		} );
 	}
