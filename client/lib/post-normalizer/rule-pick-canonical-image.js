@@ -38,6 +38,7 @@ export default function pickCanonicalImage( post ) {
 		if ( canonicalImage ) {
 			canonicalImage = {
 				uri: canonicalImage.src,
+				src: canonicalImage.src,
 				width: canonicalImage.naturalWidth,
 				height: canonicalImage.naturalHeight
 			};
