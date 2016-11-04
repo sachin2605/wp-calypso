@@ -71,12 +71,12 @@ const ThemeSheet = React.createClass( {
 		siteSlug: React.PropTypes.string,
 		backPath: React.PropTypes.string,
 		defaultOption: React.PropTypes.shape( {
-			label: React.PropTypes.string.isRequired,
+			label: React.PropTypes.string,
 			action: React.PropTypes.func,
 			getUrl: React.PropTypes.func,
 		} ),
 		secondaryOption: React.PropTypes.shape( {
-			label: React.PropTypes.string.isRequired,
+			label: React.PropTypes.string,
 			action: React.PropTypes.func,
 			getUrl: React.PropTypes.func,
 		} ),
