@@ -20,9 +20,10 @@ import {
 	THEMES_REQUEST_FAILURE
 } from 'state/action-types';
 import {
-	activateTheme,
+	themeActivation,
 	themeActivated,
 	themeActivationFailed,
+	themeActivationSuccess,
 	receiveTheme,
 	receiveThemes,
 	requestThemes,
@@ -274,48 +275,106 @@ describe( 'actions', () => {
 		} );
 	} );
 
-	describe( '#activateTheme()', () => {
+	describe( '#themeActivation()', () => {
 		it( 'should return an action object', () => {
-			const theme = { id: 'twentysixteen', name: 'Twenty Sixteen' };
-			const site = { ID: 2211667, name: 'test site' };
-			const action = activateTheme( theme, site );
-
-			expect( action ).to.eql( {
+			const themeId = 'twentysixteen';
+			const siteId = 2211667;
+			const expected = {
 				type: THEME_ACTIVATE,
-				theme: theme,
-				site: site
-			} );
+				themeId,
+				siteId,
+			};
+
+			const action = themeActivation( themeId, siteId );
+			expect( action ).to.eql( expected );
 		} );
 	} );
 
 	describe( '#themeActivated()', () => {
 		it( 'should return an action object', () => {
-			const theme = { id: 'twentysixteen', name: 'Twenty Sixteen' };
-			const site = { ID: 2211667, name: 'test site' };
-			const action = themeActivated( theme, site );
-
-			expect( action ).to.eql( {
+			const themeId = 'twentysixteen';
+			const siteId = 2211667;
+			const expected = {
 				type: THEME_ACTIVATE_SUCCESS,
-				theme,
-				site,
-				siteId: site.ID
-			} );
+				themeId,
+				siteId,
+			};
+
+			const action = themeActivated( themeId, siteId );
+			expect( action ).to.eql( expected );
 		} );
 	} );
 
-	describe( '#athemeActivationFailed()', () => {
+	describe( '#themeActivationFailed()', () => {
 		it( 'should return an action object', () => {
-			const theme = { id: 'twentysixteennnn', name: 'Twenty Sixteen' };
-			const site = { ID: 2211667, name: 'test site' };
+			const themeId = 'twentysixteen';
+			const siteId = 2211667;
 			const error = { error: 'unknown_theme', message: 'Unknown theme' };
-			const action = themeActivationFailed( theme, site, error );
-
-			expect( action ).to.eql( {
+			const expected = {
 				type: THEME_ACTIVATE_FAILURE,
-				theme,
-				site,
+				themeId,
+				siteId,
 				error,
-			} );
+			};
+
+			const action = themeActivationFailed( themeId, siteId, error );
+			expect( action ).to.eql( expected );
+		} );
+	} );
+
+	describe( '#themeActivationSuccess', () => {
+		it( 'should return an action object', () => {
+			const themeId = 'twentysixteen';
+			const previousThemeId = 'twentyfifteen';
+			const siteId = 2211667;
+			const trackingData = {
+				theme: themeId,
+				previous_theme: previousThemeId,
+				source: 'unknown',
+				purchased: false,
+				search_term: 'simple, white'
+			};
+
+			const expected = {
+				meta: {
+					analytics: [
+						{
+							payload: {
+								name: 'calypso_themeshowcase_theme_activate',
+								properties: {
+									previous_theme: 'twentyfifteen',
+									purchased: false,
+									search_term: 'simple, white',
+									source: 'unknown',
+									theme: 'twentysixteen',
+								},
+								service: 'tracks',
+							},
+							type: 'ANALYTICS_EVENT_RECORD'
+						},
+					],
+				},
+				type: THEME_ACTIVATE_SUCCESS,
+				themeId,
+				siteId,
+			};
+
+			const action = themeActivationSuccess( themeId, siteId, trackingData );
+			expect( action ).to.eql( expected );
+		} );
+	} );
+
+	describe( '#activateTheme', () => {
+		useNock( ( nock ) => {
+			nock( 'https://public-api.wordpress.com:443' )
+				.persist()
+				.get( '/rest/v1.1/sites/2916284/themes/413' )
+				.reply( 200, { ID: 413, title: 'Ribs & Chicken' } )
+				.get( '/rest/v1.1/sites/2916284/themes/420' )
+				.reply( 404, {
+					error: 'unknown_theme',
+					message: 'Unknown theme'
+				} );
 		} );
 	} );
 } );

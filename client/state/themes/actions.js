@@ -15,7 +15,10 @@ import {
 	THEME_ACTIVATE_FAILURE,
 	THEMES_RECEIVE_SERVER_ERROR,
 } from 'state/action-types';
-
+import {
+	recordTracksEvent,
+	withAnalytics
+} from 'state/analytics/actions';
 /**
  * Returns an action object to be used in signalling that a theme object has
  * been received.
@@ -133,15 +136,15 @@ export function receiveServerError( error ) {
  * Returns an action object to be used in signalling that a theme activation
  * has been triggered
  *
- * @param  {Object}  theme Theme received
- * @param  {Object}  site Site used for activation
+ * @param  {Number}  themeId Theme to be activated
+ * @param  {Object}  siteId Site used for activation
  * @return {Object}  Action object
  */
-export function activateTheme( theme, site ) {
+export function themeActivation( themeId, siteId ) {
 	return {
 		type: THEME_ACTIVATE,
-		theme,
-		site,
+		themeId,
+		siteId,
 	};
 }
 
@@ -149,16 +152,14 @@ export function activateTheme( theme, site ) {
  * Returns an action object to be used in signalling that a theme activation
  * has been successfull
  *
- * @param  {Object}  theme Theme received
- * @param  {Object}  site Site used for activation
+ * @param  {Number}  themeId Theme received
+ * @param  {Number}  siteId Site used for activation
  * @return {Object}  Action object
  */
-export function themeActivated( theme, site ) {
-	const siteId = site.ID;
+export function themeActivated( themeId, siteId ) {
 	return {
 		type: THEME_ACTIVATE_SUCCESS,
-		theme,
-		site,
+		themeId,
 		siteId,
 	};
 }
@@ -167,15 +168,47 @@ export function themeActivated( theme, site ) {
  * Returns an action object to be used in signalling that a theme activation
  * has failed
  *
- * @param  {Object}  theme Theme received
- * @param  {Object}  site Site used for activation
+ * @param  {Number}  themeId Theme received
+ * @param  {Number}  siteId Site used for activation
+ * @param  {Number}  error Error response from server
  * @return {Object}  Action object
  */
-export function themeActivationFailed( theme, site, error ) {
+export function themeActivationFailed( themeId, siteId, error ) {
 	return {
 		type: THEME_ACTIVATE_FAILURE,
-		theme,
-		site,
+		themeId,
+		siteId,
 		error,
 	};
+}
+
+const defaultTrackData = {
+	theme: undefined,
+	previous_theme: 0,
+	source: 'unknown',
+	purchased: false,
+	search_term: null
+};
+
+export function activateTheme( themeId, siteId, trackThemesActivationData = defaultTrackData ) {
+	return dispatch => {
+		dispatch( themeActivation( themeId, siteId ) );
+
+		wpcom.undocumented().activatedTheme( themeId, siteId )
+			.then( () => {
+				dispatch( themeActivationSuccess( themeId, siteId, trackThemesActivationData ) );
+			} )
+			.catch( error => {
+				dispatch( themeActivationFailed( themeId, siteId, error ) );
+			} );
+	};
+}
+
+export function themeActivationSuccess( themeId, siteId, trackThemesActivationData ) {
+	const action = themeActivated( themeId, siteId );
+	const trackThemeActivation = recordTracksEvent(
+		'calypso_themeshowcase_theme_activate',
+		trackThemesActivationData
+	);
+	return withAnalytics( trackThemeActivation, action );
 }
