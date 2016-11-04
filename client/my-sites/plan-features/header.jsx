@@ -41,6 +41,7 @@ class PlanFeaturesHeader extends Component {
 			current,
 			planType,
 			popular,
+			newPlan,
 			title,
 			translate
 		} = this.props;
@@ -50,6 +51,9 @@ class PlanFeaturesHeader extends Component {
 			<header className={ headerClasses } onClick={ this.props.onClick } >
 				{
 					popular && <Ribbon>{ translate( 'Popular' ) }</Ribbon>
+				}
+				{
+					newPlan && <Ribbon color={ 'green' }>{ translate( 'New' ) }</Ribbon>
 				}
 				<div className="plan-features__header-figure" >
 					<PlanIcon plan={ planType } />
@@ -208,6 +212,7 @@ PlanFeaturesHeader.propTypes = {
 		PLAN_PERSONAL
 	] ).isRequired,
 	popular: PropTypes.bool,
+	newPlan: PropTypes.bool,
 	rawPrice: PropTypes.number,
 	discountPrice: PropTypes.number,
 	currencyCode: PropTypes.string,
@@ -225,6 +230,7 @@ PlanFeaturesHeader.defaultProps = {
 	current: false,
 	onClick: noop,
 	popular: false,
+	newPlan: false,
 	isPlaceholder: false,
 	intervalType: 'yearly',
 	site: {},

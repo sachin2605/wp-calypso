@@ -28,6 +28,7 @@ import {
 } from 'state/plans/selectors';
 import {
 	isPopular,
+	isNew,
 	isMonthly,
 	getPlanFeaturesObject,
 	getPlanClass,
@@ -153,6 +154,7 @@ class PlanFeatures extends Component {
 				planConstantObj,
 				planName,
 				popular,
+				newPlan,
 				rawPrice,
 				relatedMonthlyPlan,
 				primaryUpgrade,
@@ -164,6 +166,7 @@ class PlanFeatures extends Component {
 						current={ current }
 						currencyCode={ currencyCode }
 						popular={ popular }
+						newPlan={ newPlan }
 						title={ planConstantObj.getTitle() }
 						planType={ planName }
 						rawPrice={ rawPrice }
@@ -217,6 +220,7 @@ class PlanFeatures extends Component {
 				planConstantObj,
 				planName,
 				popular,
+				newPlan,
 				rawPrice,
 				relatedMonthlyPlan,
 				isPlaceholder
@@ -228,6 +232,7 @@ class PlanFeatures extends Component {
 						current={ current }
 						currencyCode={ currencyCode }
 						popular={ popular }
+						newPlan={ newPlan }
 						title={ planConstantObj.getTitle() }
 						planType={ planName }
 						rawPrice={ rawPrice }
@@ -503,6 +508,7 @@ export default connect(
 			const available = isInSignup ? true : canUpgradeToPlan( plan ) && canPurchase;
 			const relatedMonthlyPlan = showMonthly ? getPlanBySlug( state, getMonthlyPlanByYearly( plan ) ) : null;
 			const popular = isPopular( plan ) && ! isPaid;
+			const newPlan = isNew( plan ) && ! isPaid;
 			const currentPlan = sitePlan && sitePlan.product_slug;
 
 			if ( placeholder || ! planObject || isLoadingSitePlans ) {
@@ -534,6 +540,7 @@ export default connect(
 				planName: plan,
 				planObject: planObject,
 				popular: popular,
+				newPlan: newPlan,
 				primaryUpgrade: (
 					( currentPlan === PLAN_PERSONAL && plan === PLAN_PREMIUM ) ||
 					( currentPlan === PLAN_PREMIUM && plan === PLAN_BUSINESS ) ||

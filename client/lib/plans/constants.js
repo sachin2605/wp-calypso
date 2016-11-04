@@ -29,6 +29,7 @@ export const PLAN_WPCOM_ENTERPRISE = 'wpcom-enterprise';
 export const PLAN_CHARGEBACK = 'chargeback';
 
 export const POPULAR_PLANS = [ PLAN_PREMIUM, PLAN_JETPACK_PREMIUM, PLAN_JETPACK_PREMIUM_MONTHLY ];
+export const NEW_PLANS = [ PLAN_JETPACK_PERSONAL, PLAN_JETPACK_PERSONAL_MONTHLY ];
 export const JETPACK_MONTHLY_PLANS = [ PLAN_JETPACK_PREMIUM_MONTHLY, PLAN_JETPACK_BUSINESS_MONTHLY, PLAN_JETPACK_PERSONAL_MONTHLY ];
 
 export const PLAN_MONTHLY_PERIOD = 31;
@@ -676,6 +677,10 @@ export function isMonthly( plan ) {
 
 export function isPopular( plan ) {
 	return includes( POPULAR_PLANS, plan );
+}
+
+export function isNew( plan ) {
+	return includes( NEW_PLANS, plan );
 }
 
 export function getPlanClass( plan ) {
