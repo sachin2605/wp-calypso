@@ -1,8 +1,9 @@
 /** @ssr-ready **/
 
 import config from 'config';
-import { getSectionName, isPreviewShowing, getSelectedSite } from 'state/ui/selectors';
+import { getSectionName, isPreviewShowing, getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
 import { getCurrentUser } from 'state/current-user/selectors';
+import { hasDefaultSiteTitle } from 'state/sites/selectors';
 
 export const inSection = sectionName => state =>
 	getSectionName( state ) === sectionName;
@@ -32,3 +33,8 @@ export const selectedSiteIsPreviewable = state =>
 
 export const selectedSiteIsCustomizable = state =>
 	getSelectedSite( state ) && getSelectedSite( state ).is_customizable;
+
+export const selectedSiteHasDefaultSiteTitle = state => {
+	const siteId = getSelectedSiteId( state );
+	return siteId ? hasDefaultSiteTitle( state, siteId ) : false;
+};
