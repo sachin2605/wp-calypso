@@ -3,7 +3,7 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { map, reduce, noop } from 'lodash';
+import { map, reduce, noop, compact } from 'lodash';
 import page from 'page';
 import classNames from 'classnames';
 import { localize } from 'i18n-calypso';
@@ -11,6 +11,7 @@ import { localize } from 'i18n-calypso';
 /**
  * Internal dependencies
  */
+import config from 'config';
 import PlanFeaturesHeader from './header';
 import PlanFeaturesItem from './item';
 import Popover from 'components/popover';
@@ -35,7 +36,9 @@ import {
 	getMonthlyPlanByYearly,
 	PLAN_PERSONAL,
 	PLAN_PREMIUM,
-	PLAN_BUSINESS
+	PLAN_BUSINESS,
+	PLAN_JETPACK_PERSONAL,
+	PLAN_JETPACK_PERSONAL_MONTHLY,
 } from 'lib/plans/constants';
 import { isFreePlan } from 'lib/plans';
 import {
@@ -160,6 +163,7 @@ class PlanFeatures extends Component {
 				primaryUpgrade,
 				isPlaceholder
 			} = properties;
+
 			return (
 				<div className="plan-features__mobile-plan" key={ planName }>
 					<PlanFeaturesHeader
@@ -498,58 +502,65 @@ export default connect(
 		const sitePlans = getPlansBySiteId( state, selectedSiteId );
 		const isPaid = isCurrentPlanPaid( state, selectedSiteId );
 		const canPurchase = ! isPaid || isCurrentUserCurrentPlanOwner( state, selectedSiteId );
-		const planProperties = map( plans, ( plan ) => {
-			let isPlaceholder = false;
-			const planConstantObj = applyTestFiltersToPlansList( plan );
-			const planProductId = planConstantObj.getProductId();
-			const planObject = getPlan( state, planProductId );
-			const isLoadingSitePlans = ! isInSignup && ! sitePlans.hasLoadedFromServer;
-			const showMonthly = ! isMonthly( plan );
-			const available = isInSignup ? true : canUpgradeToPlan( plan ) && canPurchase;
-			const relatedMonthlyPlan = showMonthly ? getPlanBySlug( state, getMonthlyPlanByYearly( plan ) ) : null;
-			const popular = isPopular( plan ) && ! isPaid;
-			const newPlan = isNew( plan ) && ! isPaid;
-			const currentPlan = sitePlan && sitePlan.product_slug;
+		const planProperties = compact(
+			map( plans, ( plan ) => {
+				if ( ! config.isEnabled( 'jetpack/personalPlan' ) &&
+					( plan === PLAN_JETPACK_PERSONAL || plan === PLAN_JETPACK_PERSONAL_MONTHLY )
+				) {
+					return;
+				}
+				let isPlaceholder = false;
+				const planConstantObj = applyTestFiltersToPlansList( plan );
+				const planProductId = planConstantObj.getProductId();
+				const planObject = getPlan( state, planProductId );
+				const isLoadingSitePlans = ! isInSignup && ! sitePlans.hasLoadedFromServer;
+				const showMonthly = ! isMonthly( plan );
+				const available = isInSignup ? true : canUpgradeToPlan( plan ) && canPurchase;
+				const relatedMonthlyPlan = showMonthly ? getPlanBySlug( state, getMonthlyPlanByYearly( plan ) ) : null;
+				const popular = isPopular( plan ) && ! isPaid;
+				const newPlan = isNew( plan ) && ! isPaid;
+				const currentPlan = sitePlan && sitePlan.product_slug;
 
-			if ( placeholder || ! planObject || isLoadingSitePlans ) {
-				isPlaceholder = true;
-			}
+				if ( placeholder || ! planObject || isLoadingSitePlans ) {
+					isPlaceholder = true;
+				}
 
-			return {
-				isPlaceholder,
-				available: available,
-				currencyCode: getCurrentUserCurrencyCode( state ),
-				current: isCurrentSitePlan( state, selectedSiteId, planProductId ),
-				discountPrice: getPlanDiscountedRawPrice( state, selectedSiteId, plan, { isMonthly: showMonthly } ),
-				features: getPlanFeaturesObject( planConstantObj.getFeatures() ),
-				onUpgradeClick: onUpgradeClick
-					? () => {
-						const planSlug = getPlanSlug( state, planProductId );
+				return {
+					isPlaceholder,
+					available: available,
+					currencyCode: getCurrentUserCurrencyCode( state ),
+					current: isCurrentSitePlan( state, selectedSiteId, planProductId ),
+					discountPrice: getPlanDiscountedRawPrice( state, selectedSiteId, plan, { isMonthly: showMonthly } ),
+					features: getPlanFeaturesObject( planConstantObj.getFeatures() ),
+					onUpgradeClick: onUpgradeClick
+						? () => {
+							const planSlug = getPlanSlug( state, planProductId );
 
-						onUpgradeClick( getCartItemForPlan( planSlug ) );
-					}
-					: () => {
-						if ( ! available ) {
-							return;
+							onUpgradeClick( getCartItemForPlan( planSlug ) );
 						}
+						: () => {
+							if ( ! available ) {
+								return;
+							}
 
-						const selectedSiteSlug = getSiteSlug( state, selectedSiteId );
-						page( `/checkout/${ selectedSiteSlug }/${ getPlanPath( plan ) || '' }` );
-					},
-				planConstantObj,
-				planName: plan,
-				planObject: planObject,
-				popular: popular,
-				newPlan: newPlan,
-				primaryUpgrade: (
-					( currentPlan === PLAN_PERSONAL && plan === PLAN_PREMIUM ) ||
-					( currentPlan === PLAN_PREMIUM && plan === PLAN_BUSINESS ) ||
-					popular
-				),
-				rawPrice: getPlanRawPrice( state, planProductId, ! relatedMonthlyPlan && showMonthly ),
-				relatedMonthlyPlan: relatedMonthlyPlan
-			};
-		} );
+							const selectedSiteSlug = getSiteSlug( state, selectedSiteId );
+							page( `/checkout/${ selectedSiteSlug }/${ getPlanPath( plan ) || '' }` );
+						},
+					planConstantObj,
+					planName: plan,
+					planObject: planObject,
+					popular: popular,
+					newPlan: newPlan,
+					primaryUpgrade: (
+						( currentPlan === PLAN_PERSONAL && plan === PLAN_PREMIUM ) ||
+						( currentPlan === PLAN_PREMIUM && plan === PLAN_BUSINESS ) ||
+						popular
+					),
+					rawPrice: getPlanRawPrice( state, planProductId, ! relatedMonthlyPlan && showMonthly ),
+					relatedMonthlyPlan: relatedMonthlyPlan
+				};
+			} )
+		);
 
 		return {
 			canPurchase,
