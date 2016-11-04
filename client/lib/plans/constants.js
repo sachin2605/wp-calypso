@@ -240,8 +240,8 @@ export const PLANS_LIST = {
 		availableFor: ( plan ) => includes( [ PLAN_JETPACK_FREE ], plan ),
 		getPathSlug: () => 'jetpack-personal',
 		getDescription: () => i18n.translate(
-			'This is some text talking about how good is our personal plan.' +
-			' If you have any suggestion about it, tell Javi about it.'
+			'Essentials for every site. The most affordable solution to keep your' +
+			' personal or small business site backed up and spam-free.'
 		),
 		getFeatures: () => [
 			FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
@@ -280,8 +280,8 @@ export const PLANS_LIST = {
 		getPathSlug: () => 'jetpack-personal-monthly',
 		availableFor: ( plan ) => includes( [ PLAN_JETPACK_FREE ], plan ),
 		getDescription: () => i18n.translate(
-			'This is some text talking about how good is our monthly personal plan.' +
-			' If you have any suggestion about it, tell Javi about it.'
+			'Essentials for every site. The most affordable solution to keep your personal' +
+			' or small business site backed up and spam-free.'
 		),
 		getFeatures: () => [
 			FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
