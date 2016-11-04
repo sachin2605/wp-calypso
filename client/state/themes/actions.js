@@ -199,7 +199,6 @@ export function activateTheme( themeId, siteId, trackThemesActivationData = defa
 				dispatch( themeActivationSuccess( themeId, siteId, trackThemesActivationData ) );
 			} )
 			.catch( error => {
-				console.log( " what" );
 				dispatch( themeActivationFailed( themeId, siteId, error ) );
 			} );
 	};

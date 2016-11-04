@@ -372,7 +372,12 @@ describe( 'actions', () => {
 			nock( 'https://public-api.wordpress.com:443' )
 				.persist()
 				.post( '/rest/v1.1/sites/2211667/themes/mine', { theme: themeId } )
-				.reply( 200, { id: 'karuna', version: '1.0.3' } );
+				.reply( 200, { id: 'karuna', version: '1.0.3' } )
+				.post( '/rest/v1.1/sites/2211667/themes/mine', { theme: 'badTheme' } )
+				.reply( 404, {
+					error: 'unknown_theme',
+					message: 'Unknown theme'
+				} );
 		} );
 
 		it( 'should dispatch request action when thunk triggered', () => {
@@ -388,6 +393,19 @@ describe( 'actions', () => {
 		it( 'should dispatch theme activation success action when request completes', () => {
 			return activateTheme( themeId, siteId, trackingData )( spy ).then( () => {
 				expect( spy ).to.have.been.calledWith( expectedActivationSuccess );
+			} );
+		} );
+
+		it( 'should dispatch theme activation failure action when request completes', () => {
+			const error = {
+				error: sinon.match( { message: 'Unknown theme' } ),
+				siteId: 2211667,
+				themeId: 'badTheme',
+				type: THEME_ACTIVATE_FAILURE
+			};
+
+			return activateTheme( 'badTheme', siteId, trackingData )( spy ).then( () => {
+				expect( spy ).to.have.been.calledWith( error );
 			} );
 		} );
 	} );
