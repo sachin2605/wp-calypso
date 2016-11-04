@@ -25,9 +25,9 @@ import {
 	getThemeCustomizeUrl as	getCustomizeUrl,
 	getThemeDetailsUrl as getDetailsUrl,
 	getThemeSupportUrl as getSupportUrl,
-	getThemeHelpUrl as getHelpUrl,
-	isThemeActive as isActive
+	getThemeHelpUrl as getHelpUrl
 } from 'state/themes/selectors';
+import { isActiveTheme as isActive } from 'state/themes/current-theme/selectors';
 import { isJetpackSite } from 'state/sites/selectors';
 import { canCurrentUser } from 'state/current-user/selectors';
 
