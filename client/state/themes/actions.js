@@ -136,7 +136,7 @@ export function receiveServerError( error ) {
  * Returns an action object to be used in signalling that a theme activation
  * has been triggered
  *
- * @param  {Number}  themeId Theme to be activated
+ * @param  {String}  themeId Theme to be activated
  * @param  {Object}  siteId Site used for activation
  * @return {Object}  Action object
  */
@@ -152,7 +152,7 @@ export function themeActivation( themeId, siteId ) {
  * Returns an action object to be used in signalling that a theme activation
  * has been successfull
  *
- * @param  {Number}  themeId Theme received
+ * @param  {String}  themeId Theme received
  * @param  {Number}  siteId Site used for activation
  * @return {Object}  Action object
  */
@@ -168,7 +168,7 @@ export function themeActivated( themeId, siteId ) {
  * Returns an action object to be used in signalling that a theme activation
  * has failed
  *
- * @param  {Number}  themeId Theme received
+ * @param  {String}  themeId Theme received
  * @param  {Number}  siteId Site used for activation
  * @param  {Number}  error Error response from server
  * @return {Object}  Action object
@@ -194,11 +194,12 @@ export function activateTheme( themeId, siteId, trackThemesActivationData = defa
 	return dispatch => {
 		dispatch( themeActivation( themeId, siteId ) );
 
-		wpcom.undocumented().activatedTheme( themeId, siteId )
+		return wpcom.undocumented().activateTheme( themeId, siteId )
 			.then( () => {
 				dispatch( themeActivationSuccess( themeId, siteId, trackThemesActivationData ) );
 			} )
 			.catch( error => {
+				console.log( " what" );
 				dispatch( themeActivationFailed( themeId, siteId, error ) );
 			} );
 	};

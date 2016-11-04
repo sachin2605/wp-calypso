@@ -24,6 +24,7 @@ import {
 	themeActivated,
 	themeActivationFailed,
 	themeActivationSuccess,
+	activateTheme,
 	receiveTheme,
 	receiveThemes,
 	requestThemes,
@@ -322,59 +323,72 @@ describe( 'actions', () => {
 		} );
 	} );
 
+	const trackingData = {
+		theme: 'twentysixteen',
+		previous_theme: 'twentyfifteen',
+		source: 'unknown',
+		purchased: false,
+		search_term: 'simple, white'
+	};
+
+	const expectedActivationSuccess = {
+		meta: {
+			analytics: [
+				{
+					payload: {
+						name: 'calypso_themeshowcase_theme_activate',
+						properties: {
+							previous_theme: 'twentyfifteen',
+							purchased: false,
+							search_term: 'simple, white',
+							source: 'unknown',
+							theme: 'twentysixteen',
+						},
+						service: 'tracks',
+					},
+					type: 'ANALYTICS_EVENT_RECORD'
+				},
+			],
+		},
+		type: THEME_ACTIVATE_SUCCESS,
+		themeId: 'twentysixteen',
+		siteId: 2211667,
+	};
+
 	describe( '#themeActivationSuccess', () => {
 		it( 'should return an action object', () => {
 			const themeId = 'twentysixteen';
-			const previousThemeId = 'twentyfifteen';
 			const siteId = 2211667;
-			const trackingData = {
-				theme: themeId,
-				previous_theme: previousThemeId,
-				source: 'unknown',
-				purchased: false,
-				search_term: 'simple, white'
-			};
-
-			const expected = {
-				meta: {
-					analytics: [
-						{
-							payload: {
-								name: 'calypso_themeshowcase_theme_activate',
-								properties: {
-									previous_theme: 'twentyfifteen',
-									purchased: false,
-									search_term: 'simple, white',
-									source: 'unknown',
-									theme: 'twentysixteen',
-								},
-								service: 'tracks',
-							},
-							type: 'ANALYTICS_EVENT_RECORD'
-						},
-					],
-				},
-				type: THEME_ACTIVATE_SUCCESS,
-				themeId,
-				siteId,
-			};
 
 			const action = themeActivationSuccess( themeId, siteId, trackingData );
-			expect( action ).to.eql( expected );
+			expect( action ).to.eql( expectedActivationSuccess );
 		} );
 	} );
 
 	describe( '#activateTheme', () => {
+		const themeId = 'twentysixteen';
+		const siteId = 2211667;
 		useNock( ( nock ) => {
 			nock( 'https://public-api.wordpress.com:443' )
 				.persist()
-				.get( '/rest/v1.1/sites/2916284/themes/413' )
-				.reply( 200, { ID: 413, title: 'Ribs & Chicken' } )
-				.get( '/rest/v1.1/sites/2916284/themes/420' )
-				.reply( 404, {
-					error: 'unknown_theme',
-					message: 'Unknown theme'
-				} );
+				.post( '/rest/v1.1/sites/2211667/themes/mine', { theme: themeId } )
+				.reply( 200, { id: 'karuna', version: '1.0.3' } );
+		} );
+
+		it( 'should dispatch request action when thunk triggered', () => {
+			activateTheme( themeId, siteId )( spy );
+
+			expect( spy ).to.have.been.calledWith( {
+				type: THEME_ACTIVATE,
+				siteId,
+				themeId,
+			} );
+		} );
+
+		it( 'should dispatch theme activation success action when request completes', () => {
+			return activateTheme( themeId, siteId, trackingData )( spy ).then( () => {
+				expect( spy ).to.have.been.calledWith( expectedActivationSuccess );
+			} );
 		} );
 	} );
 } );
