@@ -84,7 +84,7 @@ const ThemeSheet = React.createClass( {
 
 	getDefaultProps() {
 		// The defaultOption default prop is surprisingly important, see the long
-		// comment at the connect() function near the bottom of this file.
+		// comment near the connect() function at the bottom of this file.
 		return {
 			section: '',
 			defaultOption: {}
