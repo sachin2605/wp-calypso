@@ -14,17 +14,19 @@ import Theme from 'components/theme';
 import SiteSelectorModal from 'components/site-selector-modal';
 import { trackClick } from './helpers';
 
+const OPTION_SHAPE = PropTypes.shape( {
+	label: PropTypes.string,
+	header: PropTypes.string,
+	getUrl: PropTypes.func,
+	action: PropTypes.func
+} );
+
 const ThemesSiteSelectorModal = React.createClass( {
 	propTypes: {
 		children: PropTypes.element,
-		options: PropTypes.objectOf( PropTypes.shape( {
-			label: PropTypes.string,
-			header: PropTypes.string,
-			getUrl: PropTypes.func,
-			action: PropTypes.func
-		} ) ),
-		defaultOption: PropTypes.string,
-		secondaryOption: PropTypes.string,
+		options: PropTypes.objectOf( OPTION_SHAPE ),
+		defaultOption: OPTION_SHAPE,
+		secondaryOption: OPTION_SHAPE,
 		// Will be prepended to site slug for a redirect on selection
 		sourcePath: PropTypes.string.isRequired,
 	},
