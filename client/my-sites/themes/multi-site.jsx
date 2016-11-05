@@ -8,29 +8,34 @@ import React from 'react';
  */
 import SidebarNavigation from 'my-sites/sidebar-navigation';
 import ThemesSiteSelectorModal from './themes-site-selector-modal';
-import ThemeOptions from './theme-options';
+import { connectOptions } from './theme-options';
 import ThemeShowcase from './theme-showcase';
 
-export default props => (
-	<ThemeOptions options={ [
-		'preview',
-		'purchase',
-		'activate',
-		'tryandcustomize',
-		'separator',
-		'info',
-		'support',
-		'help',
-	] }
-	defaultOption="activate"
-	secondaryOption="tryandcustomize"
-	getScreenshotOption={ function() {
-		return 'info';
-	} }>
-		<ThemesSiteSelectorModal sourcePath="/design">
-			<ThemeShowcase { ...props } source="showcase">
-				<SidebarNavigation />
-			</ThemeShowcase>
-		</ThemesSiteSelectorModal>
-	</ThemeOptions>
+const MultiSiteThemeShowcase = ( props ) => (
+	<ThemesSiteSelectorModal { ...props } sourcePath="/design">
+		<ThemeShowcase source="showcase">
+			<SidebarNavigation />
+		</ThemeShowcase>
+	</ThemesSiteSelectorModal>
+);
+
+const ConnectedMultiSiteThemeShowcase = connectOptions( MultiSiteThemeShowcase );
+
+export default ( props ) => (
+	<ConnectedMultiSiteThemeShowcase { ...props }
+		options={ [
+			'preview',
+			'purchase',
+			'activate',
+			'tryandcustomize',
+			'separator',
+			'info',
+			'support',
+			'help',
+		] }
+		defaultOption="activate"
+		secondaryOption="tryandcustomize"
+		getScreenshotOption={ function() {
+			return 'info';
+		} } />
 );

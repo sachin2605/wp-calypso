@@ -36,7 +36,7 @@ import ThanksModal from 'my-sites/themes/thanks-modal';
 import QueryCurrentTheme from 'components/data/query-current-theme';
 import QueryUserPurchases from 'components/data/query-user-purchases';
 import ThemesSiteSelectorModal from 'my-sites/themes/themes-site-selector-modal';
-import ThemeOptions from 'my-sites/themes/theme-options';
+import { connectOptions } from 'my-sites/themes/theme-options';
 import { getBackPath } from 'state/themes/themes-ui/selectors';
 import EmptyContentComponent from 'components/empty-content';
 import ThemePreview from 'my-sites/themes/theme-preview';
@@ -473,6 +473,8 @@ const WrappedThemeSheet = ( props ) => {
 	);
 };
 
+const ConnectedThemeSheet = connectOptions( WrappedThemeSheet );
+
 const ThemeSheetWithOptions = ( props ) => {
 	const { selectedSite: site, active: isActive, price, isLoggedIn } = props;
 
@@ -491,8 +493,9 @@ const ThemeSheetWithOptions = ( props ) => {
 	}
 
 	return (
-		<ThemeOptions site={ site }
-			theme={ props /* TODO: Have ThemeOptions only use theme ID */ }
+		<ConnectedThemeSheet { ...props }
+			site={ site }
+			theme={ props /* TODO: Have connectOptions() only use theme ID */ }
 			options={ [
 				'signup',
 				'customize',
@@ -502,9 +505,7 @@ const ThemeSheetWithOptions = ( props ) => {
 			] }
 			defaultOption={ defaultOption }
 			secondaryOption="tryandcustomize"
-			source="showcase-sheet">
-			<WrappedThemeSheet { ...props } />
-		</ThemeOptions>
+			source="showcase-sheet" />
 	);
 };
 
@@ -516,12 +517,12 @@ export default connect(
 	// https://github.com/reactjs/redux/issues/1415), and might be fixed by
 	// react-redux 5.0.
 	// For this reason, after e.g. activating a theme in single-site mode,
-	// first the ThemeSheetWithOptions component's (child) ThemeOptions component
+	// first the ThemeSheetWithOptions component's (child) connectOptions component
 	// will update in response to the currently displayed theme being activated.
 	// Doing so, it will filter and remove the activate option (adding customize
 	// instead). However, since the parent connect()ed-ThemeSheetWithOptions will
 	// only react to the state change afterwards, there is a brief moment when
-	// ThemeOptions still receives "activate" as its defaultOption prop, when
+	// connectOptions still receives "activate" as its defaultOption prop, when
 	// activate is no longer part of its filtered options set, hence passing on
 	// undefined as the defaultOption object prop for its child. For the theme
 	// sheet, which eventually gets that defaultOption object prop, this means

@@ -3,7 +3,6 @@
 /**
  * External dependencies
  */
-import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import i18n from 'i18n-calypso';
@@ -116,18 +115,6 @@ export const help = {
 	hideForSite: ( state, site ) => isJetpackSite( state, site ),
 };
 
-const ThemeOptionsComponent = ( { children, options, defaultOption, secondaryOption, getScreenshotOption } ) => (
-	React.cloneElement(
-		children,
-		{
-			options,
-			defaultOption: options[ defaultOption ],
-			secondaryOption: secondaryOption ? options[ secondaryOption ] : null,
-			getScreenshotOption: ( theme ) => options[ getScreenshotOption( theme ) ]
-		}
-	)
-);
-
 const ALL_THEME_OPTIONS = {
 	customize,
 	preview,
@@ -143,7 +130,7 @@ const ALL_THEME_OPTIONS = {
 
 const ALL_THEME_ACTIONS = { activate: activateAction }; // All theme related actions available.
 
-export default connect(
+export const connectOptions = connect(
 	( state, { options: optionNames, site } ) => {
 		let options = pick( ALL_THEME_OPTIONS, optionNames );
 		let mapGetUrl = identity, mapHideForSite = identity;
@@ -194,13 +181,21 @@ export default connect(
 			dispatch
 		);
 	},
-	( options, actions, ownProps ) => ( {
-		...ownProps,
-		options: mapValues( options, ( option, name ) => {
+	( options, actions, ownProps ) => {
+		const { defaultOption, secondaryOption, getScreenshotOption } = ownProps;
+		options = mapValues( options, ( option, name ) => {
 			if ( has( actions, name ) ) {
 				return { ...option, action: actions[ name ] };
 			}
 			return option;
-		} )
-	} )
-)( ThemeOptionsComponent );
+		} );
+
+		return {
+			...ownProps,
+			options,
+			defaultOption: options[ defaultOption ],
+			secondaryOption: secondaryOption ? options[ secondaryOption ] : null,
+			getScreenshotOption: ( theme ) => options[ getScreenshotOption( theme ) ]
+		};
+	}
+);

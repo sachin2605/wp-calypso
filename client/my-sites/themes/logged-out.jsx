@@ -7,10 +7,12 @@ import React from 'react';
  * Internal dependencies
  */
 import ThemeShowcase from './theme-showcase';
-import ThemeOptions from './theme-options';
+import { connectOptions } from './theme-options';
+
+const ConnectedThemeShowcase = connectOptions( ThemeShowcase );
 
 export default props => (
-	<ThemeOptions { ...props }
+	<ConnectedThemeShowcase { ...props }
 	options={ [
 		'signup',
 		'preview',
@@ -23,7 +25,5 @@ export default props => (
 	getScreenshotOption={ function() {
 		return 'info';
 	} }
-	source="showcase">
-		<ThemeShowcase { ...props } />
-	</ThemeOptions>
+	source="showcase" />
 );

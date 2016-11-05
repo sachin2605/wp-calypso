@@ -11,7 +11,7 @@ import { map, pickBy } from 'lodash';
  */
 import Card from 'components/card';
 import CurrentThemeButton from './button';
-import ThemeOptions from '../theme-options';
+import { connectOptions } from '../theme-options';
 import { trackClick } from '../helpers';
 import { getCurrentTheme } from 'state/themes/current-theme/selectors';
 import QueryCurrentTheme from 'components/data/query-current-theme';
@@ -76,16 +76,17 @@ const CurrentTheme = React.createClass( {
 	}
 } );
 
+const ConnectedCurrentTheme = connectOptions( CurrentTheme );
+
 const CurrentThemeWithOptions = ( { site, currentTheme } ) => (
-	<ThemeOptions site={ site }
+	<ConnectedCurrentTheme currentTheme={ currentTheme }
+		site={ site }
 		options={ [
 			'customize',
 			'info',
 			'support'
 		] }
-		source="current theme">
-		<CurrentTheme site={ site } currentTheme={ currentTheme } />
-	</ThemeOptions>
+		source="current theme" />
 );
 
 export default connect(

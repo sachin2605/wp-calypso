@@ -16,7 +16,7 @@ import config from 'config';
 import EmptyContent from 'components/empty-content';
 import JetpackUpgradeMessage from './jetpack-upgrade-message';
 import JetpackManageDisabledMessage from './jetpack-manage-disabled-message';
-import ThemeOptions from './theme-options';
+import { connectOptions } from './theme-options';
 import sitesFactory from 'lib/sites-list';
 import { FEATURE_ADVANCED_DESIGN } from 'lib/plans/constants';
 import UpgradeNudge from 'my-sites/upgrade-nudge';
@@ -43,9 +43,35 @@ const JetpackThemeReferrerPage = localize(
 		</Main>
 	)
 );
-const SingleSiteThemeShowcase = ( props ) => {
+
+const SingleSiteThemeShowcase = localize(
+	( props ) => {
+		const site = sites.getSelectedSite(),
+			{ translate } = props;
+
+		return (
+			<ThemeShowcase { ...props }>
+				<SidebarNavigation />
+				<ThanksModal
+					site={ site }
+					source={ 'list' } />
+				<CurrentTheme site={ site } />
+				<UpgradeNudge
+					title={ translate( 'Get Custom Design with Premium' ) }
+					message={ translate( 'Customize your theme using premium fonts, color palettes, and the CSS editor.' ) }
+					feature={ FEATURE_ADVANCED_DESIGN }
+					event="themes_custom_design"
+				/>
+			</ThemeShowcase>
+		);
+	}
+);
+
+const ConnectedSingleSiteThemeShowcase = connectOptions( SingleSiteThemeShowcase );
+
+const SingleSiteThemeShowcaseWithOptions = ( props ) => {
 	const site = sites.getSelectedSite(),
-		{ analyticsPath, analyticsPageTitle, isJetpack, translate } = props,
+		{ analyticsPath, analyticsPageTitle, isJetpack } = props,
 		jetpackEnabled = config.isEnabled( 'manage/themes-jetpack' );
 
 	// If we've only just switched from single to multi-site, there's a chance
@@ -72,7 +98,8 @@ const SingleSiteThemeShowcase = ( props ) => {
 	}
 
 	return (
-		<ThemeOptions site={ site }
+		<ConnectedSingleSiteThemeShowcase { ...props }
+			site={ site }
 			options={ [
 				'customize',
 				'preview',
@@ -89,21 +116,7 @@ const SingleSiteThemeShowcase = ( props ) => {
 			getScreenshotOption={ function( theme ) {
 				return theme.active ? 'customize' : 'info';
 			} }
-			source="showcase">
-			<ThemeShowcase { ...props }>
-				<SidebarNavigation />
-				<ThanksModal
-					site={ site }
-					source={ 'list' } />
-				<CurrentTheme site={ site } />
-				<UpgradeNudge
-					title={ translate( 'Get Custom Design with Premium' ) }
-					message={ translate( 'Customize your theme using premium fonts, color palettes, and the CSS editor.' ) }
-					feature={ FEATURE_ADVANCED_DESIGN }
-					event="themes_custom_design"
-				/>
-			</ThemeShowcase>
-		</ThemeOptions>
+			source="showcase" />
 	);
 };
 
@@ -116,4 +129,4 @@ export default connect(
 			isCustomizable: selectedSite && canCurrentUser( state, selectedSite.ID, 'edit_theme_options' )
 		};
 	}
-)( localize( SingleSiteThemeShowcase ) );
+)( SingleSiteThemeShowcaseWithOptions );
