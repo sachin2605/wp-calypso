@@ -321,14 +321,26 @@ const ThemeSheet = React.createClass( {
 		return <ThemeDownloadCard theme={ this.props.id } href={ this.props.download } />;
 	},
 
+	getDefaultOptionLabel() {
+		const { defaultOption, active: isActive, isLoggedIn, price } = this.props;
+		if ( isLoggedIn && ! isActive ) {
+			if ( price ) { // purchase
+				return i18n.translate( 'Pick this design' );
+			}
+			return i18n.translate( 'Activate this design' );
+		}
+		return defaultOption.label;
+	},
+
 	renderPreview() {
-		const { secondaryOption, active, isLoggedIn, defaultOption } = this.props;
+		const { active, isLoggedIn, defaultOption, secondaryOption } = this.props;
+
 		const showSecondaryButton = secondaryOption && ! active && isLoggedIn;
 		return (
 			<ThemePreview showPreview={ this.state.showPreview }
 				theme={ this.props }
 				onClose={ this.togglePreview }
-				primaryButtonLabel={ defaultOption.label }
+				primaryButtonLabel={ this.getDefaultOptionLabel() }
 				getPrimaryButtonHref={ defaultOption.getUrl }
 				onPrimaryButtonClick={ this.onButtonClick }
 				secondaryButtonLabel={ showSecondaryButton ? secondaryOption.label : null }
@@ -374,7 +386,8 @@ const ThemeSheet = React.createClass( {
 	},
 
 	renderButton() {
-		const { label, getUrl } = this.props.defaultOption;
+		const { getUrl } = this.props.defaultOption;
+		const label = this.getDefaultOptionLabel();
 		const placeholder = <span className="theme__sheet-button-placeholder">loading......</span>;
 
 		return (
@@ -486,10 +499,8 @@ const ThemeSheetWithOptions = ( props ) => {
 		defaultOption = 'customize';
 	} else if ( price ) {
 		defaultOption = 'purchase';
-		//defaultOption.label = i18n.translate( 'Pick this design' );
 	} else {
 		defaultOption = 'activate';
-		//defaultOption.label = i18n.translate( 'Activate this design' );
 	}
 
 	return (
