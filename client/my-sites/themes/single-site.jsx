@@ -44,30 +44,30 @@ const JetpackThemeReferrerPage = localize(
 	)
 );
 
-const SingleSiteThemeShowcase = localize(
-	( props ) => {
-		const site = sites.getSelectedSite(),
-			{ translate } = props;
+const SingleSiteThemeShowcase = connectOptions(
+	localize(
+		( props ) => {
+			const site = sites.getSelectedSite(),
+				{ translate } = props;
 
-		return (
-			<ThemeShowcase { ...props }>
-				<SidebarNavigation />
-				<ThanksModal
-					site={ site }
-					source={ 'list' } />
-				<CurrentTheme site={ site } />
-				<UpgradeNudge
-					title={ translate( 'Get Custom Design with Premium' ) }
-					message={ translate( 'Customize your theme using premium fonts, color palettes, and the CSS editor.' ) }
-					feature={ FEATURE_ADVANCED_DESIGN }
-					event="themes_custom_design"
-				/>
-			</ThemeShowcase>
-		);
-	}
+			return (
+				<ThemeShowcase { ...props }>
+					<SidebarNavigation />
+					<ThanksModal
+						site={ site }
+						source={ 'list' } />
+					<CurrentTheme site={ site } />
+					<UpgradeNudge
+						title={ translate( 'Get Custom Design with Premium' ) }
+						message={ translate( 'Customize your theme using premium fonts, color palettes, and the CSS editor.' ) }
+						feature={ FEATURE_ADVANCED_DESIGN }
+						event="themes_custom_design"
+					/>
+				</ThemeShowcase>
+			);
+		}
+	)
 );
-
-const ConnectedSingleSiteThemeShowcase = connectOptions( SingleSiteThemeShowcase );
 
 const SingleSiteThemeShowcaseWithOptions = ( props ) => {
 	const site = sites.getSelectedSite(),
@@ -98,7 +98,7 @@ const SingleSiteThemeShowcaseWithOptions = ( props ) => {
 	}
 
 	return (
-		<ConnectedSingleSiteThemeShowcase { ...props }
+		<SingleSiteThemeShowcase { ...props }
 			site={ site }
 			options={ [
 				'customize',

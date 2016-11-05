@@ -11,18 +11,18 @@ import ThemesSiteSelectorModal from './themes-site-selector-modal';
 import { connectOptions } from './theme-options';
 import ThemeShowcase from './theme-showcase';
 
-const MultiSiteThemeShowcase = ( props ) => (
-	<ThemesSiteSelectorModal { ...props } sourcePath="/design">
-		<ThemeShowcase source="showcase">
-			<SidebarNavigation />
-		</ThemeShowcase>
-	</ThemesSiteSelectorModal>
+const MultiSiteThemeShowcase = connectOptions(
+	( props ) => (
+		<ThemesSiteSelectorModal { ...props } sourcePath="/design">
+			<ThemeShowcase source="showcase">
+				<SidebarNavigation />
+			</ThemeShowcase>
+		</ThemesSiteSelectorModal>
+	)
 );
 
-const ConnectedMultiSiteThemeShowcase = connectOptions( MultiSiteThemeShowcase );
-
 export default ( props ) => (
-	<ConnectedMultiSiteThemeShowcase { ...props }
+	<MultiSiteThemeShowcase { ...props }
 		options={ [
 			'preview',
 			'purchase',

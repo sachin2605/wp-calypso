@@ -460,20 +460,20 @@ const ThemeSheet = React.createClass( {
 	},
 } );
 
-const WrappedThemeSheet = ( props ) => {
-	if ( ! props.isLoggedIn || props.selectedSite ) {
-		return <ThemeSheet { ...props } />;
+const ConnectedThemeSheet = connectOptions(
+	( props ) => {
+		if ( ! props.isLoggedIn || props.selectedSite ) {
+			return <ThemeSheet { ...props } />;
+		}
+
+		return (
+			<ThemesSiteSelectorModal { ...props }
+				sourcePath={ `/theme/${ props.id }${ props.section ? '/' + props.section : '' }` }>
+				<ThemeSheet />
+			</ThemesSiteSelectorModal>
+		);
 	}
-
-	return (
-		<ThemesSiteSelectorModal { ...props }
-			sourcePath={ `/theme/${ props.id }${ props.section ? '/' + props.section : '' }` }>
-			<ThemeSheet />
-		</ThemesSiteSelectorModal>
-	);
-};
-
-const ConnectedThemeSheet = connectOptions( WrappedThemeSheet );
+);
 
 const ThemeSheetWithOptions = ( props ) => {
 	const { selectedSite: site, active: isActive, price, isLoggedIn } = props;
