@@ -531,17 +531,17 @@ export default connect(
 	// state update from finishing properly, hence not updating defaultOption at all.
 	// The solution to this incredibly intricate issue is simple: Give ThemeSheet
 	// a valid defaultProp for defaultOption.
-	( state, props ) => {
+	( state, { id } ) => {
 		const selectedSite = getSelectedSite( state );
 		const siteSlug = selectedSite ? getSiteSlug( state, selectedSite.ID ) : '';
 		const backPath = getBackPath( state );
 		const currentUserId = getCurrentUserId( state );
 		const isCurrentUserPaid = isUserPaid( state, currentUserId );
-		const themeDetails = getThemeDetails( state, props.id );
+		const themeDetails = getThemeDetails( state, id );
 
 		return {
 			...themeDetails,
-			id: props.id,
+			id,
 			selectedSite,
 			siteSlug,
 			backPath,
