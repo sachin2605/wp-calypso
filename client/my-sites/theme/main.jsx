@@ -326,7 +326,7 @@ const ThemeSheet = React.createClass( {
 		if ( isLoggedIn && ! isActive ) {
 			if ( price ) { // purchase
 				return i18n.translate( 'Pick this design' );
-			}
+			} // else: activate
 			return i18n.translate( 'Activate this design' );
 		}
 		return defaultOption.label;
