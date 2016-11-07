@@ -30,7 +30,7 @@ import { isActiveTheme as isActive } from 'state/themes/current-theme/selectors'
 import { isJetpackSite } from 'state/sites/selectors';
 import { canCurrentUser } from 'state/current-user/selectors';
 
-export const purchase = config.isEnabled( 'upgrades/checkout' )
+const purchase = config.isEnabled( 'upgrades/checkout' )
 	? {
 		label: i18n.translate( 'Purchase', {
 			context: 'verb'
@@ -44,14 +44,14 @@ export const purchase = config.isEnabled( 'upgrades/checkout' )
 	}
 	: {};
 
-export const activate = {
+const activate = {
 	label: i18n.translate( 'Activate' ),
 	header: i18n.translate( 'Activate on:', { comment: 'label for selecting a site on which to activate a theme' } ),
 	action: activateAction,
 	hideForTheme: ( state, theme, site ) => isActive( state, theme.id, site ) || ( theme.price && ! theme.purchased )
 };
 
-export const customize = {
+const customize = {
 	label: i18n.translate( 'Customize' ),
 	header: i18n.translate( 'Customize on:', { comment: 'label in the dialog for selecting a site for which to customize a theme' } ),
 	icon: 'customize',
@@ -60,7 +60,7 @@ export const customize = {
 	hideForTheme: ( state, theme, site ) => ! isActive( state, theme.id, site )
 };
 
-export const tryandcustomize = {
+const tryandcustomize = {
 	label: i18n.translate( 'Try & Customize' ),
 	header: i18n.translate( 'Try & Customize on:', {
 		comment: 'label in the dialog for opening the Customizer with the theme in preview'
@@ -72,7 +72,7 @@ export const tryandcustomize = {
 
 // This is a special option that gets its `action` added by `ThemeShowcase` or `ThemeSheet`,
 // respectively. TODO: Replace with a real action once we're able to use `SitePreview`.
-export const preview = {
+const preview = {
 	label: i18n.translate( 'Live demo', {
 		comment: 'label for previewing the theme demo website'
 	} ),
@@ -80,18 +80,18 @@ export const preview = {
 	hideForTheme: ( state, theme, site ) => isActive( state, theme.id, site )
 };
 
-export const signup = {
+const signup = {
 	label: i18n.translate( 'Pick this design', {
 		comment: 'when signing up for a WordPress.com account with a selected theme'
 	} ),
 	getUrl: getSignupUrl
 };
 
-export const separator = {
+const separator = {
 	separator: true
 };
 
-export const info = {
+const info = {
 	label: i18n.translate( 'Info', {
 		comment: 'label for displaying the theme info sheet'
 	} ),
@@ -99,7 +99,7 @@ export const info = {
 	getUrl: getDetailsUrl,
 };
 
-export const support = {
+const support = {
 	label: i18n.translate( 'Setup' ),
 	icon: 'help',
 	getUrl: getSupportUrl,
@@ -108,7 +108,7 @@ export const support = {
 	hideForTheme: ( state, theme ) => ! isPremium( theme )
 };
 
-export const help = {
+const help = {
 	label: i18n.translate( 'Support' ),
 	getUrl: getHelpUrl,
 	// We don't know where support docs for a given theme on a self-hosted WP install are.
