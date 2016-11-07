@@ -546,20 +546,16 @@ export default connect(
 	 */
 	( state, { id } ) => {
 		const selectedSite = getSelectedSite( state );
-		const siteSlug = selectedSite ? getSiteSlug( state, selectedSite.ID ) : '';
-		const backPath = getBackPath( state );
 		const currentUserId = getCurrentUserId( state );
-		const isCurrentUserPaid = isUserPaid( state, currentUserId );
-		const themeDetails = getThemeDetails( state, id );
 
 		return {
-			...themeDetails,
+			...getThemeDetails( state, id ),
 			id,
 			selectedSite,
-			siteSlug,
-			backPath,
+			siteSlug: selectedSite ? getSiteSlug( state, selectedSite.ID ) : '',
+			backPath: getBackPath( state ),
 			currentUserId,
-			isCurrentUserPaid,
+			isCurrentUserPaid: isUserPaid( state, currentUserId ),
 			isLoggedIn: !! currentUserId,
 		};
 	}
