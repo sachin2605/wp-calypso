@@ -28,6 +28,16 @@ export const isNewUser = state => {
 	return ( Date.now() - creation ) <= WEEK_IN_MILLISECONDS;
 };
 
+export const userIsOlderThan = age => state => {
+	const user = getCurrentUser( state );
+	if ( ! user ) {
+		return false;
+	}
+
+	const creation = Date.parse( user.date );
+	return ( Date.now() - creation ) >= age;
+};
+
 export const selectedSiteIsPreviewable = state =>
 	getSelectedSite( state ) && getSelectedSite( state ).is_previewable;
 
