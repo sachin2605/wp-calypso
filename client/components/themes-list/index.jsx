@@ -4,7 +4,7 @@
 import React from 'react';
 import times from 'lodash/times';
 import { localize } from 'i18n-calypso';
-import identity from 'lodash/identity';
+import { identity, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 
 /**
@@ -61,6 +61,15 @@ export const ThemesList = React.createClass( {
 				return '';
 			}
 		};
+	},
+
+	shouldComponentUpdate( nextProps ) {
+		return nextProps.loading !== this.props.loading ||
+			! isEqual( nextProps.themes, this.props.themes ) ||
+			( nextProps.getButtonOptions, this.props.getButtonOptions ) ||
+			( nextProps.getScreenshotUrl !== this.props.getScreenshotUrl ) ||
+			( nextProps.onScreenshotClick !== this.props.onScreenshotClick ) ||
+			( nextProps.onMoreButtonClick !== this.props.onMoreButtonClick );
 	},
 
 	renderTheme( theme, index ) {
