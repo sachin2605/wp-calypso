@@ -310,7 +310,7 @@ describe( 'actions', () => {
 		it( 'should return an action object', () => {
 			const themeId = 'twentysixteen';
 			const siteId = 2211667;
-			const error = { error: 'unknown_theme', message: 'Unknown theme' };
+			const error = { error: 'theme_not_found', message: 'The specified theme was not found' };
 			const expected = {
 				type: THEME_ACTIVATE_FAILURE,
 				themeId,
@@ -375,8 +375,8 @@ describe( 'actions', () => {
 				.reply( 200, { id: 'karuna', version: '1.0.3' } )
 				.post( '/rest/v1.1/sites/2211667/themes/mine', { theme: 'badTheme' } )
 				.reply( 404, {
-					error: 'unknown_theme',
-					message: 'Unknown theme'
+					error: 'theme_not_found',
+					message: 'The specified theme was not found'
 				} );
 		} );
 
@@ -395,10 +395,9 @@ describe( 'actions', () => {
 				expect( spy ).to.have.been.calledWith( expectedActivationSuccess );
 			} );
 		} );
-
 		it( 'should dispatch theme activation failure action when request completes', () => {
 			const error = {
-				error: sinon.match( { message: 'Unknown theme' } ),
+				error: sinon.match( { message: 'The specified theme was not found' } ),
 				siteId: 2211667,
 				themeId: 'badTheme',
 				type: THEME_ACTIVATE_FAILURE
