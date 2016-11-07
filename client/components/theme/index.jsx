@@ -63,7 +63,7 @@ const Theme = React.createClass( {
 
 	shouldComponentUpdate( nextProps ) {
 		// TODO: Once we're not using theme.active and theme.purchased anymore, just compare theme.id instead of entire theme objects.
-		return ! isEqual( this.props.theme, this.props.theme ) ||
+		return ! isEqual( nextProps.theme, this.props.theme ) ||
 			! isEqual( nextProps.buttonContents, this.props.buttonContents ) ||
 			( nextProps.screenshotClickUrl !== this.props.screenshotClickUrl ) ||
 			( nextProps.onScreenshotClick !== this.props.onScreenshotClick ) ||
