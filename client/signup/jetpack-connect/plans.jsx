@@ -9,7 +9,7 @@ import { localize } from 'i18n-calypso';
 /**
  * Internal dependencies
  */
-import { PLAN_JETPACK_FREE, PLAN_JETPACK_PREMIUM, PLAN_JETPACK_BUSINESS } from 'lib/plans/constants';
+import { PLAN_JETPACK_FREE, PLAN_JETPACK_PREMIUM, PLAN_JETPACK_BUSINESS, PLAN_JETPACK_PERSONAL } from 'lib/plans/constants';
 import { getPlansBySite } from 'state/sites/plans/selectors';
 import { isCurrentPlanPaid } from 'state/sites/selectors';
 import { getFlowType, isRedirectingToWpAdmin } from 'state/jetpack-connect/selectors';
@@ -91,7 +91,7 @@ class Plans extends Component {
 	}
 
 	isFlowTypePaid() {
-		return this.props.flowType === 'pro' || this.props.flowType === 'premium';
+		return this.props.flowType === 'pro' || this.props.flowType === 'premium' || this.props.flowType === 'personal';
 	}
 
 	redirect( path ) {
@@ -110,6 +110,8 @@ class Plans extends Component {
 			planSlug = PLAN_JETPACK_BUSINESS;
 		} else if ( this.props.flowType === 'premium' ) {
 			planSlug = PLAN_JETPACK_PREMIUM;
+		} else if ( this.props.flowType === 'personal' ) {
+			planSlug = PLAN_JETPACK_PERSONAL;
 		}
 
 		const plan = this.props.getPlanBySlug( planSlug );
@@ -142,6 +144,11 @@ class Plans extends Component {
 		}
 		if ( cartItem.product_slug === PLAN_JETPACK_BUSINESS ) {
 			this.props.recordTracksEvent( 'calypso_jpc_plans_submit_299', {
+				user: this.props.userId
+			} );
+		}
+		if ( cartItem.product_slug === PLAN_JETPACK_PERSONAL ) {
+			this.props.recordTracksEvent( 'calypso_jpc_plans_submit_9', {
 				user: this.props.userId
 			} );
 		}
