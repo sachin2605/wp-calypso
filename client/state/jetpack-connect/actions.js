@@ -19,6 +19,7 @@ import {
 	JETPACK_CONNECT_AUTHORIZE_LOGIN_COMPLETE,
 	JETPACK_CONNECT_AUTHORIZE_RECEIVE,
 	JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
+	JETPACK_CONNECT_COMPLETE_FLOW,
 	JETPACK_CONNECT_CREATE_ACCOUNT,
 	JETPACK_CONNECT_CREATE_ACCOUNT_RECEIVE,
 	JETPACK_CONNECT_ACTIVATE_MANAGE,
@@ -418,6 +419,14 @@ export default {
 					data: null,
 					error: pick( error, [ 'error', 'status', 'message' ] )
 				} );
+			} );
+		};
+	},
+	completeFlow( site ) {
+		return ( dispatch ) => {
+			dispatch( {
+				type: JETPACK_CONNECT_COMPLETE_FLOW,
+				site
 			} );
 		};
 	}

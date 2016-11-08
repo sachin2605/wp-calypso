@@ -20,7 +20,7 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import { getCurrentUser } from 'state/current-user/selectors';
 import { addItem } from 'lib/upgrades/actions';
 import { getAuthorizationData, isCalypsoStartedConnection } from 'state/jetpack-connect/selectors';
-import { goBackToWpAdmin } from 'state/jetpack-connect/actions';
+import { goBackToWpAdmin, completeFlow } from 'state/jetpack-connect/actions';
 import QueryPlans from 'components/data/query-plans';
 import QuerySitePlans from 'components/data/query-site-plans';
 import { isRequestingPlans, getPlanBySlug } from 'state/plans/selectors';
@@ -62,14 +62,14 @@ class Plans extends Component {
 
 	componentDidUpdate() {
 		if ( this.props.calypsoStartedConnection ) {
-			if ( this.props.hasPaidPlan ) {
-				page.redirect( CALYPSO_PLAN_PAGE + this.props.selectedSite.slug );
+			if ( this.props.hasPaidPlan && ! this.redirecting ) {
+				this.redirect( CALYPSO_PLAN_PAGE + this.props.selectedSite.slug );
 			}
-			if ( ! this.props.canPurchasePlans ) {
-				page.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
+			if ( ! this.props.canPurchasePlans && ! this.redirecting ) {
+				this.redirect( CALYPSO_REDIRECTION_PAGE + this.props.selectedSite.slug );
 			}
 
-			if ( ! this.props.isRequestingPlans && this.isFlowTypePaid() ) {
+			if ( ! this.props.isRequestingPlans && this.isFlowTypePaid() && ! this.redirecting ) {
 				return this.autoselectPlan();
 			}
 		} else if ( this.props.hasPaidPlan || ! this.props.canPurchasePlans ) {
@@ -92,6 +92,12 @@ class Plans extends Component {
 
 	isFlowTypePaid() {
 		return this.props.flowType === 'pro' || this.props.flowType === 'premium';
+	}
+
+	redirect( path ) {
+		page.redirect( path + this.props.selectedSite.slug );
+		this.props.completeFlow();
+		this.redirecting = true;
 	}
 
 	autoselectPlan() {
@@ -118,7 +124,7 @@ class Plans extends Component {
 			user: this.props.userId
 		} );
 		if ( this.props.calypsoStartedConnection ) {
-			page.redirect( CALYPSO_PLAN_PAGE + this.props.selectedSite.slug );
+			this.redirect( CALYPSO_PLAN_PAGE + this.props.selectedSite.slug );
 		} else {
 			this.redirectToWpAdmin();
 		}
@@ -141,12 +147,14 @@ class Plans extends Component {
 		}
 		addItem( cartItem );
 		page( checkoutPath );
+		this.redirecting = true;
+		this.props.completeFlow();
 	}
 
 	render() {
 		const { translate } = this.props;
 
-		if ( this.isFlowTypePaid() ) {
+		if ( this.redirecting || this.isFlowTypePaid() ) {
 			return null;
 		}
 
@@ -208,6 +216,7 @@ export default connect(
 	},
 	{
 		goBackToWpAdmin,
+		completeFlow,
 		recordTracksEvent
 	}
 )( localize( Plans ) );

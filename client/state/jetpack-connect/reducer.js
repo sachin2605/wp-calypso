@@ -20,6 +20,7 @@ import {
 	JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
 	JETPACK_CONNECT_ACTIVATE_MANAGE,
 	JETPACK_CONNECT_ACTIVATE_MANAGE_RECEIVE,
+	JETPACK_CONNECT_COMPLETE_FLOW,
 	JETPACK_CONNECT_CREATE_ACCOUNT,
 	JETPACK_CONNECT_CREATE_ACCOUNT_RECEIVE,
 	JETPACK_CONNECT_REDIRECT,
@@ -117,6 +118,8 @@ export function jetpackConnectSite( state = {}, action ) {
 			return state;
 		case JETPACK_CONNECT_CONFIRM_JETPACK_STATUS:
 			return Object.assign( {}, state, { installConfirmedByUser: action.status } );
+		case JETPACK_CONNECT_COMPLETE_FLOW:
+			return {};
 		case SERIALIZE:
 		case DESERIALIZE:
 			return {};
@@ -250,6 +253,8 @@ export function jetpackConnectAuthorize( state = {}, action ) {
 			return Object.assign( {}, state, { isRedirectingToWpAdmin: true } );
 		case JETPACK_CONNECT_REDIRECT_WP_ADMIN:
 			return Object.assign( {}, state, { isRedirectingToWpAdmin: true } );
+		case JETPACK_CONNECT_COMPLETE_FLOW:
+			return {};
 		case DESERIALIZE:
 			return ! isStale( state.timestamp, JETPACK_CONNECT_AUTHORIZE_TTL ) ? state : {};
 		case SERIALIZE:
