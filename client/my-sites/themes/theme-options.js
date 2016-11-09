@@ -12,7 +12,7 @@ import mapValues from 'lodash/mapValues';
  */
 import config from 'config';
 import {
-	activate as activateAction
+		activateTheme as activateAction
 } from 'state/themes/actions';
 import {
 	isPremiumTheme as isPremium
