@@ -118,7 +118,7 @@ UndocumentedSite.prototype.shortcodes = function( attributes, callback ) {
 };
 
 UndocumentedSite.prototype.getRoles = function( callback ) {
-	this.wpcom.withLocale().req.get( '/sites/' + this._id + '/roles', {}, callback );
+	return this.wpcom.withLocale().req.get( '/sites/' + this._id + '/roles', {}, callback );
 };
 
 UndocumentedSite.prototype.getViewers = function( query, callback ) {
