@@ -19,7 +19,7 @@ NODE ?= node
 NPM ?= npm
 BUNDLER ?= $(BIN)/bundler
 I18N_CALYPSO ?= $(NODE_BIN)/i18n-calypso
-SASS ?= $(NODE_BIN)/node-sass --include-path 'client'
+SASS ?= $(NODE_BIN)/node-sass --include-path 'client' --include-path 'build'
 RTLCSS ?= $(NODE_BIN)/rtlcss
 AUTOPREFIXER ?= $(NODE_BIN)/postcss -r --use autoprefixer --autoprefixer.browsers "last 2 versions, > 1%, Safari >= 8, iOS >= 8, Firefox ESR, Opera 12.1"
 RECORD_ENV ?= $(BIN)/record-env
@@ -128,11 +128,17 @@ mixedindentlint: node_modules/mixedindentlint
 $(CLIENT_CONFIG_FILE): .env config/$(CALYPSO_ENV).json config/client.json server/config/regenerate-client.js
 	@$(NODE) server/config/regenerate-client.js > $@
 
-public/style.css: node_modules $(SASS_FILES)
+build/_components.scss: $(SASS_FILES)
+	@mkdir -p build
+	@echo "$(SASS_FILES)" | tr " " "\n" | sed "/^assets\// d ; s/^client\//@import '/; s/$$/';/" > $@
+
+public/style-rtl.css: public/style.css
+
+public/style.css: node_modules $(SASS_FILES) build/_components.scss
 	@$(SASS) assets/stylesheets/style.scss $@
 	@$(AUTOPREFIXER) $@
 
-public/style-debug.css: node_modules $(SASS_FILES)
+public/style-debug.css: node_modules $(SASS_FILES) build/_components.scss
 	@$(SASS) --source-map "$(@D)/style-debug.css.map" assets/stylesheets/style.scss $@
 	@$(AUTOPREFIXER) $@
 
