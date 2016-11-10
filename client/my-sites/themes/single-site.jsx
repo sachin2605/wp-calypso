@@ -24,6 +24,7 @@ import { getSelectedSite } from 'state/ui/selectors';
 import { isJetpackSite } from 'state/sites/selectors';
 import { canCurrentUser } from 'state/current-user/selectors';
 import PageViewTracker from 'lib/analytics/page-view-tracker';
+import QuerySitePurchases from 'components/data/query-site-purchases';
 import ThemeShowcase from './theme-showcase';
 
 const sites = sitesFactory();
@@ -52,6 +53,7 @@ const SingleSiteThemeShowcase = connectOptions(
 
 			return (
 				<ThemeShowcase { ...props } siteId={ site && site.ID }>
+					{ site && <QuerySitePurchases siteId={ site.ID } /> }
 					<SidebarNavigation />
 					<ThanksModal
 						site={ site }
