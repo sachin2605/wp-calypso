@@ -11,3 +11,12 @@
 		vertical-align: middle;
 	}
 }
+
+.remove-purchase__chat-link-container {
+	color: darken( $gray, 20% );
+	line-height: 40px; /*Vertical align the text in the middle*/
+
+	@include breakpoint( ">480px" ) {
+		float: left;
+	}
+}
